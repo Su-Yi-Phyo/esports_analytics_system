@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import fetch_one
 from app.routes import leaderboard, matches, players, rosters, seasons, teams
 from app.routes import mongo_match_logs
+from app.routes import mongo_analytics
+from app.routes import mongo_advanced
 
 
 app = FastAPI(title="MLBB Coach Decision System API", version="1.0.0")
@@ -23,6 +25,8 @@ app.include_router(rosters.router)
 app.include_router(matches.router)
 app.include_router(leaderboard.router)
 app.include_router(mongo_match_logs.router)
+app.include_router(mongo_analytics.router)
+app.include_router(mongo_advanced.router)
 
 
 @app.get("/api/health")
