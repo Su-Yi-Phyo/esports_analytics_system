@@ -1,0 +1,29 @@
+# Node
+node_modules/
+dist/
+build/
+.vite/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker/database runtime
+*.mdf
+*.ldf
+data/
+mongo_data/
+sqlserver_data/
