@@ -178,7 +178,20 @@ function MatchEntry() {
   };
 
   const save = async () => {
-    if (!seasonId || !teamAId || !teamBId || teamAId === teamBId) return;
+    if (!seasonId || !teamAId || !teamBId) {
+      alert("Please select season and both teams.");
+      return;
+    }
+
+    if (teamAId === teamBId) {
+      alert("Team A and Team B cannot be the same.");
+      return;
+    }
+
+    if (aRoster.length === 0 || bRoster.length === 0) {
+      alert("Both teams must have roster players in the selected season.");
+      return;
+    }
 
     const winnerId =
       scoreA > scoreB ? Number(teamAId) :
@@ -214,17 +227,24 @@ function MatchEntry() {
       })),
     };
 
-    await fetch(`${API_BASE_URL}/api/matches`, {
+    const res = await fetch(`${API_BASE_URL}/api/matches`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.detail || "Could not save match record.");
+      return;
+    }
+
+    alert("Match record saved successfully.");
+
     setStats({});
     setScoreA(0);
     setScoreB(0);
   };
-
   const teamA = teams.find(t => t.id === Number(teamAId));
   const teamB = teams.find(t => t.id === Number(teamBId));
 

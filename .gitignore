@@ -1,29 +1,89 @@
-# Node
+# =========================
+# NODE / FRONTEND
+# =========================
 node_modules/
 dist/
 build/
 .vite/
+.next/
+coverage/
 
-# Python
+# =========================
+# PYTHON / BACKEND
+# =========================
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
 .venv/
 venv/
+env/
+ENV/
 
-# Environment
+.python-version
+.pytest_cache/
+.mypy_cache/
+
+# =========================
+# ENVIRONMENT VARIABLES
+# =========================
 .env
-.env.local
+.env.*
+!.env.example
 
-# Logs
+# =========================
+# LOGS
+# =========================
 *.log
+logs/
 
-# OS
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# OS FILES
+# =========================
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Docker/database runtime
+# =========================
+# IDE / EDITOR
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# DATABASE / DOCKER RUNTIME
+# =========================
 *.mdf
 *.ldf
-data/
+*.bak
+
 mongo_data/
 sqlserver_data/
+data/
+
+# Docker volumes/runtime
+docker-data/
+tmp/
+
+# =========================
+# CACHE
+# =========================
+.cache/
+.parcel-cache/
+
+# =========================
+# TYPESCRIPT
+# =========================
+*.tsbuildinfo
+
+# =========================
+# OPTIONAL GENERATED FILES
+# =========================
+*.sqlite3
+*.db

@@ -20,7 +20,6 @@ const adminNav: { to: string; label: string; icon: typeof Activity; exact?: bool
   { to: "/admin/rosters", label: "Rosters", icon: Users2 },
   { to: "/admin/matches", label: "Match Entry", icon: ClipboardList },
   { to: "/admin/records", label: "Records", icon: Database },
-  { to: "/admin/logic", label: "System Logic", icon: GitBranch },
 ] as const;
 
 export function AppLayout() {

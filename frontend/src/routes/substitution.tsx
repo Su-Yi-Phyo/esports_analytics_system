@@ -111,8 +111,21 @@ function SubstitutionPage() {
   const playerOut = players.find(p => p.id === outId) ?? null;
   const role = playerOut?.role ?? "Jungle";
 
-  const candidates = playerOut ? getByRole(players, role).filter(p => p.id !== playerOut.id) : [];
-  const playerIn = players.find(p => p.id === inId) ?? candidates[0] ?? null;
+  const outOptions = players
+    .slice()
+    .sort((a, b) => {
+      if (a.role !== b.role) return roles.indexOf(a.role) - roles.indexOf(b.role);
+      return Number(b.kda) - Number(a.kda);
+    });
+
+  const candidates = playerOut
+    ? getByRole(players, role).filter(p => p.id !== playerOut.id)
+    : [];
+
+  const playerIn =
+    candidates.find(p => p.id === inId) ??
+    candidates[0] ??
+    null;
 
   const simulated = useMemo(() => {
     const next = { ...baseline };
@@ -157,26 +170,26 @@ function SubstitutionPage() {
             <PlayerCard player={playerOut} />
 
             <div>
-              <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Choose starter to substitute</label>
+              <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Choose player to substitute</label>
               <select
                 value={outId ?? ""}
                 onChange={(e) => {
                   const selected = players.find(p => p.id === Number(e.target.value));
                   setOutId(Number(e.target.value));
-                  const firstCandidate = selected ? getByRole(players, selected.role).find(p => p.id !== selected.id) : null;
+
+                  const firstCandidate = selected
+                    ? getByRole(players, selected.role).find(p => p.id !== selected.id)
+                    : null;
+
                   setInId(firstCandidate?.id ?? null);
                 }}
                 className="mt-2 w-full bg-surface-2/60 border border-border/50 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary"
               >
-                {roles.map(r => {
-                  const starter = baseline[r];
-                  if (!starter) return null;
-                  return (
-                    <option key={r} value={starter.id}>
-                      {r} — {starter.nickname}
-                    </option>
-                  );
-                })}
+                {outOptions.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.role} — {p.nickname} · {p.team ?? p.team_name ?? "Free Agent"}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

@@ -42,10 +42,19 @@ type Match = {
   match_date?: string;
 };
 
+type MongoTimeline = {
+  match_id: number;
+  match_date: string;
+  kda: number;
+  gpm: number;
+  result: string;
+};
+
 function Dashboard() {
   const [players, setPlayers] = useState<ApiPlayer[]>([]);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mongoTrend, setMongoTrend] = useState<{ match: number; avg: number; top: number }[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -65,6 +74,38 @@ function Dashboard() {
         matchesPlayed: Number(p.matchesPlayed ?? p.matches_played ?? 0),
         avatar: p.avatar ?? COLORS[i % COLORS.length],
       }));
+
+      const topPlayers = normalized
+      .slice()
+      .sort((a, b) => Number(b.kda) - Number(a.kda))
+      .slice(0, 10);
+
+      const timelines = await Promise.all(
+        topPlayers.map(p =>
+          apiGet<MongoTimeline[]>(`/api/mongo/player/${p.id}/timeline`).catch(() => [])
+        )
+      );
+
+      const maxLength = Math.max(...timelines.map(t => t.length), 0);
+
+      const mongoChartData = Array.from({ length: maxLength }, (_, i) => {
+        const values = timelines
+          .map(t => [...t].reverse()[i])
+          .filter(Boolean)
+          .map(x => Number(x.kda));
+
+        const topValue = timelines[0]?.slice().reverse()[i]?.kda ?? 0;
+
+        return {
+          match: i + 1,
+          avg: values.length
+            ? +(values.reduce((s, v) => s + v, 0) / values.length).toFixed(2)
+            : 0,
+          top: Number(topValue),
+        };
+      });
+
+      setMongoTrend(mongoChartData);
 
       setPlayers(normalized);
       setMatches(matchData);
@@ -96,13 +137,15 @@ function Dashboard() {
       ? bestLineup.reduce((s, p) => s + Number(p.kda), 0) / bestLineup.length
       : 0;
 
-  const trendData = Array.from({ length: 12 }, (_, i) => ({
-    match: i + 1,
-    avg: ranked.length
-      ? +(ranked.slice(0, 10).reduce((s, p) => s + Number(p.kda), 0) / Math.min(10, ranked.length)).toFixed(2)
-      : 0,
-    top: ranked[0] ? +Number(ranked[0].kda).toFixed(2) : 0,
-  }));
+  const trendData = mongoTrend.length > 0
+  ? mongoTrend
+  : Array.from({ length: 12 }, (_, i) => ({
+      match: i + 1,
+      avg: ranked.length
+        ? +(ranked.slice(0, 10).reduce((s, p) => s + Number(p.kda), 0) / Math.min(10, ranked.length)).toFixed(2)
+        : 0,
+      top: ranked[0] ? +Number(ranked[0].kda).toFixed(2) : 0,
+    }));
 
   const roleStats = roles.map(r => {
     const ps = players.filter(p => p.role === r);
@@ -157,7 +200,7 @@ function Dashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="font-display text-xl font-bold">Performance Trend</h2>
-              <p className="text-xs text-muted-foreground">SQL aggregate · top player vs top 10 average</p>
+              <p className="text-xs text-muted-foreground">Top player vs top 10 average</p>
             </div>
             <div className="flex gap-3 text-xs">
               <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-primary" /> Top Player</span>

@@ -75,8 +75,11 @@ def create_match(payload: MatchPayload):
     if payload.team_a_id == payload.team_b_id:
         raise HTTPException(status_code=400, detail="Team A and Team B cannot be the same.")
 
+    if len(payload.stats) == 0:
+        raise HTTPException(status_code=400, detail="Cannot save match without player statistics.")
+
     execute_query("""
-        INSERT INTO Matches
+        INSERT INTO dbo.Matches
             (season_id, match_date, team_a_id, team_b_id, team_a_score, team_b_score, winner_team_id, match_duration_minutes)
         VALUES
             (?, ?, ?, ?, ?, ?, ?, ?);
@@ -96,7 +99,7 @@ def create_match(payload: MatchPayload):
 
     for s in payload.stats:
         execute_query("""
-            INSERT INTO MatchStatsFlat
+            INSERT INTO dbo.MatchStatsFlat
                 (match_id, team_id, player_id, role, kills, deaths, assists, gpm,
                  damage_dealt, damage_taken, objective_participation, result)
             VALUES

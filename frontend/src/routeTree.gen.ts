@@ -25,7 +25,6 @@ import { Route as AdminRostersRouteImport } from './routes/admin.rosters'
 import { Route as AdminRecordsRouteImport } from './routes/admin.records'
 import { Route as AdminPlayersRouteImport } from './routes/admin.players'
 import { Route as AdminMatchesRouteImport } from './routes/admin.matches'
-import { Route as AdminLogicRouteImport } from './routes/admin.logic'
 
 const SubstitutionRoute = SubstitutionRouteImport.update({
   id: '/substitution',
@@ -107,11 +106,6 @@ const AdminMatchesRoute = AdminMatchesRouteImport.update({
   path: '/matches',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminLogicRoute = AdminLogicRouteImport.update({
-  id: '/logic',
-  path: '/logic',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,7 +115,6 @@ export interface FileRoutesByFullPath {
   '/lineup': typeof LineupRoute
   '/login': typeof LoginRoute
   '/substitution': typeof SubstitutionRoute
-  '/admin/logic': typeof AdminLogicRoute
   '/admin/matches': typeof AdminMatchesRoute
   '/admin/players': typeof AdminPlayersRoute
   '/admin/records': typeof AdminRecordsRoute
@@ -139,7 +132,6 @@ export interface FileRoutesByTo {
   '/lineup': typeof LineupRoute
   '/login': typeof LoginRoute
   '/substitution': typeof SubstitutionRoute
-  '/admin/logic': typeof AdminLogicRoute
   '/admin/matches': typeof AdminMatchesRoute
   '/admin/players': typeof AdminPlayersRoute
   '/admin/records': typeof AdminRecordsRoute
@@ -159,7 +151,6 @@ export interface FileRoutesById {
   '/lineup': typeof LineupRoute
   '/login': typeof LoginRoute
   '/substitution': typeof SubstitutionRoute
-  '/admin/logic': typeof AdminLogicRoute
   '/admin/matches': typeof AdminMatchesRoute
   '/admin/players': typeof AdminPlayersRoute
   '/admin/records': typeof AdminRecordsRoute
@@ -180,7 +171,6 @@ export interface FileRouteTypes {
     | '/lineup'
     | '/login'
     | '/substitution'
-    | '/admin/logic'
     | '/admin/matches'
     | '/admin/players'
     | '/admin/records'
@@ -198,7 +188,6 @@ export interface FileRouteTypes {
     | '/lineup'
     | '/login'
     | '/substitution'
-    | '/admin/logic'
     | '/admin/matches'
     | '/admin/players'
     | '/admin/records'
@@ -217,7 +206,6 @@ export interface FileRouteTypes {
     | '/lineup'
     | '/login'
     | '/substitution'
-    | '/admin/logic'
     | '/admin/matches'
     | '/admin/players'
     | '/admin/records'
@@ -355,18 +343,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMatchesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/logic': {
-      id: '/admin/logic'
-      path: '/logic'
-      fullPath: '/admin/logic'
-      preLoaderRoute: typeof AdminLogicRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
 
 interface AdminRouteChildren {
-  AdminLogicRoute: typeof AdminLogicRoute
   AdminMatchesRoute: typeof AdminMatchesRoute
   AdminPlayersRoute: typeof AdminPlayersRoute
   AdminRecordsRoute: typeof AdminRecordsRoute
@@ -377,7 +357,6 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminLogicRoute: AdminLogicRoute,
   AdminMatchesRoute: AdminMatchesRoute,
   AdminPlayersRoute: AdminPlayersRoute,
   AdminRecordsRoute: AdminRecordsRoute,
